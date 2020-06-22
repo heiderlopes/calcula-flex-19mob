@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 
 import br.com.heiderlopes.calculaflex.R
 import br.com.heiderlopes.calculaflex.ui.base.BaseFragment
+import br.com.heiderlopes.calculaflex.utils.firebase.RemoteConfigKeys
+import br.com.heiderlopes.calculaflex.utils.firebase.RemoteConfigUtils
 
 class TermsFragment : BaseFragment() {
     override val layout = R.layout.fragment_terms
@@ -27,6 +30,27 @@ class TermsFragment : BaseFragment() {
             activity?.onBackPressed()
         }
 
-        wvTerms.loadUrl("https://calcula-flex-19mob.firebaseapp.com/")
+        val termsUrl = RemoteConfigUtils.getFirebaseRemoteConfig()
+            .getString(RemoteConfigKeys.TERMS_URL)
+
+        wvTerms.webViewClient = CalculaFlexWebViewClients(this)
+        wvTerms.loadUrl(termsUrl)
     }
+
+    class CalculaFlexWebViewClients(private val baseFragment: BaseFragment) : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            view.loadUrl(url)
+            return true
+        }
+
+        override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
+            baseFragment.hideLoading()
+        }
+
+        init {
+            baseFragment.showLoading()
+        }
+    }
+
 }
