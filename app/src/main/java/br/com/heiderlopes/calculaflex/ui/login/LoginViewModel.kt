@@ -13,6 +13,7 @@ class LoginViewModel : ViewModel() {
     private var mAuth = FirebaseAuth.getInstance()
 
     val loginState = MutableLiveData<RequestState<FirebaseUser>>()
+    val resetPasswordState = MutableLiveData<RequestState<String>>()
 
     fun signIn(email: String, password: String) {
 
@@ -33,6 +34,27 @@ class LoginViewModel : ViewModel() {
                 }
         }
     }
+
+    fun resetPassword(email: String) {
+        resetPasswordState.value = RequestState.Loading
+        if(email.isNotEmpty()) {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        resetPasswordState.value = RequestState.Success("Verifique sua caixa de e-mail")
+                    } else {
+                        resetPasswordState.value = RequestState.Error(
+                            Throwable(
+                                task.exception?.message ?: "Não foi possível realizar a requisição"
+                            )
+                        )
+                    }
+                }
+        } else {
+            resetPasswordState.value =  RequestState.Error(EmailInvalidException())
+        }
+    }
+
 
     private fun validateFields(email: String, password: String): Boolean {
 

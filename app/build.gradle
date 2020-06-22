@@ -55,5 +55,9 @@ dependencies {
 
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
+    implementation 'br.com.concrete:canarinho:2.0.1'
+
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
+
 
 }

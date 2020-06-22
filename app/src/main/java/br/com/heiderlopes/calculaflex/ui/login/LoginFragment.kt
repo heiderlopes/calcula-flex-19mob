@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 
 import br.com.heiderlopes.calculaflex.R
 import br.com.heiderlopes.calculaflex.exceptions.EmailInvalidException
@@ -55,10 +56,21 @@ class LoginFragment : BaseFragment() {
 
     private fun registerObserver() {
         loginViewModel.loginState.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is RequestState.Success -> showSuccess()
                 is RequestState.Error -> showError(it.throwable)
                 is RequestState.Loading -> showLoading("Realizando a autenticação")
+            }
+        })
+
+        loginViewModel.resetPasswordState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is RequestState.Success -> {
+                    hideLoading()
+                    showMessage(it.data)
+                }
+                is RequestState.Error -> showError(it.throwable)
+                is RequestState.Loading -> showLoading("Reenviando o e-mail para troca de senha")
             }
         })
     }
@@ -75,7 +87,7 @@ class LoginFragment : BaseFragment() {
         etEmailLogin.error = null
         etPasswordLogin.error = null
 
-        when(throwable) {
+        when (throwable) {
             is EmailInvalidException -> {
                 etEmailLogin.error = throwable.message
                 etEmailLogin.requestFocus()
@@ -104,6 +116,16 @@ class LoginFragment : BaseFragment() {
                 etEmailLogin.text.toString(),
                 etPasswordLogin.text.toString()
             )
+        }
+
+        tvResetPassword.setOnClickListener {
+            loginViewModel.resetPassword(
+                etEmailLogin.text.toString()
+            )
+        }
+
+        tvNewAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
     }
 
