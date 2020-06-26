@@ -1,4 +1,4 @@
-package br.com.heiderlopes.calculaflex.ui.betterfuel
+package br.com.heiderlopes.calculaflex.ui.cars.list
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,8 +12,8 @@ import br.com.heiderlopes.calculaflex.ui.base.auth.BaseAuthFragment
 /**
  * A simple [Fragment] subclass.
  */
-class BetterFuelFragment : BaseAuthFragment() {
+class CarsListFragment : BaseAuthFragment() {
 
-    override val layout = R.layout.fragment_better_fuel
+    override val layout = R.layout.fragment_cars_list
 
 }

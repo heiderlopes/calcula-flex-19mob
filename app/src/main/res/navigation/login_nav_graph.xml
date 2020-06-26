@@ -10,9 +10,6 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_main_nav_graph"
-            app:destination="@id/main_nav_graph" />
-        <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -20,7 +17,6 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
-    <include app:graph="@navigation/main_nav_graph" />
     <fragment
         android:id="@+id/signUpFragment"
         android:name="br.com.heiderlopes.calculaflex.ui.signup.SignUpFragment"

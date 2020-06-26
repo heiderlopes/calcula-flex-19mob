@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,7 @@ import br.com.heiderlopes.calculaflex.exceptions.EmailInvalidException
 import br.com.heiderlopes.calculaflex.exceptions.PasswordInvalidException
 import br.com.heiderlopes.calculaflex.models.RequestState
 import br.com.heiderlopes.calculaflex.ui.base.BaseFragment
+import br.com.heiderlopes.calculaflex.ui.base.auth.NAVIGATION_KEY
 
 class LoginFragment : BaseFragment() {
 
@@ -52,6 +54,16 @@ class LoginFragment : BaseFragment() {
         setUpView(view)
         startAnimation()
         registerObserver()
+        registerBackPressedAction()
+    }
+
+    private fun registerBackPressedAction() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                activity?.finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     private fun registerObserver() {
@@ -77,8 +89,12 @@ class LoginFragment : BaseFragment() {
 
     private fun showSuccess() {
         hideLoading()
-        NavHostFragment.findNavController(this)
-            .navigate(R.id.action_loginFragment_to_main_nav_graph)
+        val navIdForArguments = arguments?.getInt(NAVIGATION_KEY)
+        if(navIdForArguments == null) {
+            findNavController().navigate(R.id.main_nav_graph)
+        } else {
+            findNavController().popBackStack(navIdForArguments, false)
+        }
     }
 
     private fun showError(throwable: Throwable) {
